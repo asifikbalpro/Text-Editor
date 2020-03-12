@@ -9,10 +9,16 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JTabbedPane;
 import javax.swing.plaf.FileChooserUI;
 
 /**
@@ -24,6 +30,9 @@ public class textEditor extends javax.swing.JFrame {
     /**
      * Creates new form textEditor
      */
+    String fileName = null;
+    
+    
     public textEditor() {
         initComponents();
     }
@@ -44,10 +53,10 @@ public class textEditor extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jNew = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        jOpen = new javax.swing.JMenuItem();
         jSave = new javax.swing.JMenuItem();
         jSaveAs = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        jClose = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
         jMenuItem1.setText("jMenuItem1");
@@ -75,14 +84,14 @@ public class textEditor extends javax.swing.JFrame {
         });
         jMenu1.add(jNew);
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem2.setText("Open");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        jOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        jOpen.setText("Open");
+        jOpen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                jOpenActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem2);
+        jMenu1.add(jOpen);
 
         jSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jSave.setText("Save");
@@ -97,14 +106,14 @@ public class textEditor extends javax.swing.JFrame {
         });
         jMenu1.add(jSaveAs);
 
-        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem3.setText("Close");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        jClose.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jClose.setText("Close");
+        jClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                jCloseActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem3);
+        jMenu1.add(jClose);
 
         jMenuBar1.add(jMenu1);
 
@@ -117,7 +126,9 @@ public class textEditor extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 819, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 829, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,41 +143,61 @@ public class textEditor extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jMenu1ActionPerformed
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+    private void jCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCloseActionPerformed
         // TODO add your handling code here:
 //        WindowEvent windowEvent = new WindowEvent(this, EXIT_ON_CLOSE);
 //        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(windowEvent);
         System.exit(0);
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    }//GEN-LAST:event_jCloseActionPerformed
 
     private void jSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveAsActionPerformed
         // TODO add your handling code here
         String textString = jText.getText();
-        
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.showSaveDialog(null);
+        String fileName = fileChooser.getName();       
+        fileChooser.setDialogTitle(fileName);
+        System.out.println(fileName);
     }//GEN-LAST:event_jSaveAsActionPerformed
 
     private void jNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNewActionPerformed
         // TODO add your handling code here:
        
+     
     }//GEN-LAST:event_jNewActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void jOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jOpenActionPerformed
         // TODO add your handling code here:
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.showOpenDialog(null);
-        File file = fileChooser.getSelectedFile();
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+        File file = fileChooser.getSelectedFile(); // this will get directory file
+        jText.setText(file.toString());
+//        System.out.println("selected file"+ file.getAbsolutePath()); 
 
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(file);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        String fileContent = "";
+        while(scanner.hasNextLine()){
+            fileContent = fileContent.concat(scanner.nextLine()+"\n");
+        }
+        jText.setText(fileContent);
+    }//GEN-LAST:event_jOpenActionPerformed
+    
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem jClose;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jNew;
+    private javax.swing.JMenuItem jOpen;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JMenuItem jSave;
     private javax.swing.JMenuItem jSaveAs;
