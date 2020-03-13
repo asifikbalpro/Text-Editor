@@ -29,13 +29,11 @@ public class textEditor extends javax.swing.JFrame {
      */
     private File file;
     private String fileContent = "";
-    Scanner scanner = null;
+    private Scanner scanner = null;
     
-    FileWriter fileWriter;
-    FileReader fileReader;
+    private FileWriter fileWriter;
+    private FileReader fileReader;
     
-    
-    JOptionPane optionPane;
     
     
     public textEditor() {
@@ -184,6 +182,7 @@ public class textEditor extends javax.swing.JFrame {
     private void jNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNewActionPerformed
         // TODO add your handling code here:
        jText.setText("");
+       file = new File("");
     }//GEN-LAST:event_jNewActionPerformed
 
     private void jOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jOpenActionPerformed
@@ -195,32 +194,40 @@ public class textEditor extends javax.swing.JFrame {
 //        System.out.println("selected file"+ file.getAbsolutePath()); 
 
         try {
-            scanner = new Scanner(file);
+            setScanner(new Scanner(file));
         } catch (FileNotFoundException ex) {
             Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        
-        while(scanner.hasNextLine()){
-            setFileContent(getFileContent().concat(scanner.nextLine()+"\n"));
+        while(getScanner().hasNextLine()){
+            setFileContent(getFileContent().concat(getScanner().nextLine()+"\n"));
         }
         jText.setText(getFileContent());
-        scanner.close();
+        getScanner().close();
     }//GEN-LAST:event_jOpenActionPerformed
 
     private void jSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveActionPerformed
         // TODO add your handling code here:
         // this will save all the text into currunt file.
-        JFileChooser fileChooser = new JFileChooser(file.getAbsoluteFile());
+        JFileChooser fileChooser;
+        FileWriter fileWriter; 
+//        System.out.println();
+        if (file.getName() == null) {
+            fileChooser = new JFileChooser(file);
+            fileChooser.showSaveDialog(null);
+            file = fileChooser.getSelectedFile();
+        }else{
+            fileChooser = new JFileChooser(file.getAbsoluteFile());
         System.out.println(file.getName());
         try {
-            FileWriter fileWriter = new FileWriter(file);
+            fileWriter = new FileWriter(file);
             fileWriter.write(jText.getText());
             fileWriter.close();
         } catch (IOException ex) {
             Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        
+  
     }//GEN-LAST:event_jSaveActionPerformed
     
     
@@ -252,5 +259,19 @@ public class textEditor extends javax.swing.JFrame {
      */
     public void setFileContent(String fileContent) {
         this.fileContent = fileContent;
+    }
+
+    /**
+     * @return the scanner
+     */
+    public Scanner getScanner() {
+        return scanner;
+    }
+
+    /**
+     * @param scanner the scanner to set
+     */
+    public void setScanner(Scanner scanner) {
+        this.scanner = scanner;
     }
 }
