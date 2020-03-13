@@ -158,6 +158,7 @@ public class textEditor extends javax.swing.JFrame {
 //        WindowEvent windowEvent = new WindowEvent(this, EXIT_ON_CLOSE);
 //        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(windowEvent);
         System.exit(0);
+//        file = new File("");
     }//GEN-LAST:event_jCloseActionPerformed
 
     private void jSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveAsActionPerformed
