@@ -5,21 +5,16 @@
  */
 package Text.Editor;
 
-import java.awt.Toolkit;
-import java.awt.Window;
-import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import javax.swing.JTabbedPane;
-import javax.swing.plaf.FileChooserUI;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -27,10 +22,20 @@ import javax.swing.plaf.FileChooserUI;
  */
 public class textEditor extends javax.swing.JFrame {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Creates new form textEditor
      */
-    String fileName = null;
+    private File file;
+    private String fileContent = "";
+    Scanner scanner = null;
+    
+    FileWriter fileWriter;
+    FileReader fileReader;
+    
+    
+    JOptionPane optionPane;
     
     
     public textEditor() {
@@ -95,6 +100,11 @@ public class textEditor extends javax.swing.JFrame {
 
         jSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jSave.setText("Save");
+        jSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jSaveActionPerformed(evt);
+            }
+        });
         jMenu1.add(jSave);
 
         jSaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
@@ -152,41 +162,82 @@ public class textEditor extends javax.swing.JFrame {
 
     private void jSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveAsActionPerformed
         // TODO add your handling code here
-        String textString = jText.getText();
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.showSaveDialog(null);
-        String fileName = fileChooser.getName();       
-        fileChooser.setDialogTitle(fileName);
-        System.out.println(fileName);
+        JFileChooser jFileChooser = new JFileChooser();
+        jFileChooser.showSaveDialog(null);
+        String file_name = jFileChooser.getSelectedFile().toString();
+        System.out.println(file_name);
+        
+        file = new File(file_name);
+        System.out.println(file.getName());
+        System.out.println(jText.getText());
+        String currentText = jText.getText();
+        try {
+            fileWriter = new FileWriter(file);
+        } catch (IOException ex) {
+            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            fileWriter.write(jText.getText());
+        } catch (IOException ex) {
+            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            fileWriter.close();
+        } catch (IOException ex) {
+            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jSaveAsActionPerformed
 
     private void jNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNewActionPerformed
         // TODO add your handling code here:
-       
-     
+       jText.setText("");
     }//GEN-LAST:event_jNewActionPerformed
 
     private void jOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jOpenActionPerformed
         // TODO add your handling code here:
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.showOpenDialog(null);
-        File file = fileChooser.getSelectedFile(); // this will get directory file
+        file = fileChooser.getSelectedFile(); // this will get directory file
         jText.setText(file.toString());
 //        System.out.println("selected file"+ file.getAbsolutePath()); 
 
-        Scanner scanner = null;
         try {
             scanner = new Scanner(file);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        String fileContent = "";
+        
         while(scanner.hasNextLine()){
-            fileContent = fileContent.concat(scanner.nextLine()+"\n");
+            setFileContent(getFileContent().concat(scanner.nextLine()+"\n"));
         }
-        jText.setText(fileContent);
+        jText.setText(getFileContent());
+        scanner.close();
     }//GEN-LAST:event_jOpenActionPerformed
+
+    private void jSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveActionPerformed
+        // TODO add your handling code here:
+        // this will save all the text into currunt file.
+//        JFileChooser fileChooser = new JFileChooser(file);
+////        file = new File();
+//        try {
+//            FileWriter fileWriter = new FileWriter(file);
+//        } catch (IOException ex) {
+//            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//        try {
+//            fileWriter.write(jText.getText());
+//        } catch (IOException ex) {
+//            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        try {
+//            fileWriter.close();
+//        } catch (IOException ex) {
+//            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+    }//GEN-LAST:event_jSaveActionPerformed
     
     
 
@@ -204,4 +255,18 @@ public class textEditor extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jText;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * @return the fileContent
+     */
+    public String getFileContent() {
+        return fileContent;
+    }
+
+    /**
+     * @param fileContent the fileContent to set
+     */
+    public void setFileContent(String fileContent) {
+        this.fileContent = fileContent;
+    }
 }
