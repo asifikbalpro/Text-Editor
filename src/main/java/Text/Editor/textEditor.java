@@ -173,15 +173,7 @@ public class textEditor extends javax.swing.JFrame {
         String currentText = jText.getText();
         try {
             fileWriter = new FileWriter(file);
-        } catch (IOException ex) {
-            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             fileWriter.write(jText.getText());
-        } catch (IOException ex) {
-            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
             fileWriter.close();
         } catch (IOException ex) {
             Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
@@ -218,25 +210,16 @@ public class textEditor extends javax.swing.JFrame {
     private void jSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveActionPerformed
         // TODO add your handling code here:
         // this will save all the text into currunt file.
-//        JFileChooser fileChooser = new JFileChooser(file);
-////        file = new File();
-//        try {
-//            FileWriter fileWriter = new FileWriter(file);
-//        } catch (IOException ex) {
-//            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
-//        try {
-//            fileWriter.write(jText.getText());
-//        } catch (IOException ex) {
-//            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        try {
-//            fileWriter.close();
-//        } catch (IOException ex) {
-//            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
+        JFileChooser fileChooser = new JFileChooser(file.getAbsoluteFile());
+        System.out.println(file.getName());
+        try {
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(jText.getText());
+            fileWriter.close();
+        } catch (IOException ex) {
+            Logger.getLogger(textEditor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }//GEN-LAST:event_jSaveActionPerformed
     
     
